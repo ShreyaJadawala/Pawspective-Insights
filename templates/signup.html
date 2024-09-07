@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #c2b280;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">PAWspective Insights</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-3">
+        <a href="/" class="btn btn-back">
+            <span>&lt;</span>
+        </a>
+    </div>
+
+    <div class="container mt-2 d-flex justify-content-center">
+        <div class="sign-up-card card p-4 shadow-sm">
+            <h2 class="text-center mb-4">Create your Account</h2>
+            <form action="/signup" method="post" autocomplete="off">
+                <div class="row mb-2 align-items-center">
+                    <label for="name" class="col-sm-4 col-form-label">Name :</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="name" name="name" autocomplete="new-name" required>
+                    </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                    <label for="address" class="col-sm-4 col-form-label">Address :</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="address" name="address" autocomplete="new-address" required>
+                    </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                    <label for="city" class="col-sm-4 col-form-label">City :</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="city" name="city" autocomplete="new-city" required>
+                    </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                    <label for="province" class="col-sm-4 col-form-label">Province :</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="province" name="province" autocomplete="new-province" required>
+                    </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                    <label for="country" class="col-sm-4 col-form-label">Country :</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="country" name="country" autocomplete="new-country" required>
+                    </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                    <label for="postal_code" class="col-sm-4 col-form-label">Postal Code :</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="postal_code" name="postal_code" autocomplete="new-postal-code" required>
+                    </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                    <label for="email" class="col-sm-4 col-form-label">Email :</label>
+                    <div class="col-sm-8">
+                        <input type="email" class="form-control" id="email" name="email" autocomplete="new-email" required>
+                    </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                    <label for="password" class="col-sm-4 col-form-label">Password :</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" required>
+                    </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                    <label for="confirmpassword" class="col-sm-4 col-form-label">Confirm Password :</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" autocomplete="new-password" required>
+                    </div>
+                </div>
+                <div class="row mb-2 align-items-center">
+                    <label for="dob" class="col-sm-4 col-form-label">Date Of Birth :</label>
+                    <div class="col-sm-8">
+                        <input type="date" class="form-control" id="dob" name="dob" autocomplete="new-date" required>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-custom mx-2">Sign Up</button>
+                    <button type="button" class="btn btn-custom-cancel mx-2">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer mt-5 py-4">
+        <div class="container text-center">
+            <p>PAWspective Insights © 2024</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="#" class="text-dark">Home</a></li>
+                <li class="list-inline-item"><a href="#" class="text-dark">About us</a></li>
+                <li class="list-inline-item"><a href="#" class="text-dark">Our Services</a></li>
+                <li class="list-inline-item"><a href="#" class="text-dark">Contact</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>
