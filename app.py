@@ -53,6 +53,7 @@ db = SQLAlchemy(app)
 # Configure Azure connection string from environment
 app.config['AZURE_CONNECTION_STRING'] = os.getenv('AZURE_CONNECTION_STRING')
 
+
 mail=Mail(app)
 
 # Define User model with is_admin attribute
@@ -644,7 +645,9 @@ def send_recovery_code(to_email, recovery_code):
     try:
         poller = client.begin_send(message)
         result = poller.result()
-        print("Recovery email sent:", result.message_id)
+        # print("Recovery email sent:", result.message_id)
+    # finally:
+    #     print("s")
     except Exception as ex:
         print("Failed to send recovery email:", ex)
 
