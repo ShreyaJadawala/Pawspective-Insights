@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - PAWspective Insights{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <center><h2>About Us</h2></center>
+    <div class="about-content">
+        <div class="about-text">
+            <h3>Welcome to PAWspective Insights</h3>
+            <p>Where understanding your pet has never been simpler. Our journey began with a simple belief: every wag, woof, and whisker has a story.</p>
+            <p>Dedicated to enhancing the bond between pets and their owners, we combine cutting-edge technology with veterinary science to bring you an innovative platform for insight into your furry friend's emotional and breed-specific traits.</p>
+        </div>
+        <div class="about-image">
+            <img src="{{ url_for('static', filename='images/dog_image.png') }}" alt="PAWspective Insights Dog">
+        </div>
+    </div>
+</div>
+{% endblock %}

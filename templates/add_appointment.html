@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add New Appointment for {{ pet.name }}
+{% endblock %}
+
+{% block content %}
+<div class="appointment-form-container">
+    <h2 class="text-center">Add New Appointment</h2>
+
+    
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <script>
+        document.querySelector("form").addEventListener("submit", function () {
+            this.querySelector("button[type='submit']").disabled = true;
+        });
+    </script>
+    <form method="POST">
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+        <div class="form-group">
+            <label for="time">Time:</label>
+            <input type="time" class="form-control" id="time" name="time" required>
+        </div>
+        <div class="form-group">
+            <label for="clinic">Clinic:</label>
+            <input type="text" class="form-control" id="clinic" name="clinic" required>
+        </div>
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-custom-submit">Submit</button>
+            <a href="{{ url_for('pet_details', pet_id=pet.id) }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

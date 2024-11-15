@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Feedback</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #c2b280;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">PAWspective Insights</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h2 class="text-center">User Feedback</h2>
+        <h3 class="text-center">Average Rating: {{ avg_rating }}</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tr>
+                    <th>User</th>
+                    <th>Feedback</th>
+                    <th>Rating</th>
+                    <th>Date Submitted</th>
+                </tr>
+                {% for feedback in feedbacks %}
+                <tr>
+                    <td>{{ feedback.user.name }}</td>
+                    <td>{{ feedback.feedback_text }}</td>
+                    <td>{{ feedback.rating }}</td>
+                    <td>{{ feedback.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                </tr>
+                {% endfor %}
+
+
+                <!-- Table Content Here -->
+            </table>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-custom mt-3">Back to Dashboard</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

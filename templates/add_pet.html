@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add New Pet
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Back Button -->
+    <button class="btn back-btn" onclick="window.history.back();">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left"
+            viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M5.854 3.146a.5.5 0 0 1 0 .708L2.707 7H14.5a.5.5 0 0 1 0 1H2.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 0 1 .708 0z" />
+        </svg> Back
+    </button>
+
+    <!-- Form Card Container -->
+    <div class="card p-4" style="background-color: #f5e6cc; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 12px;">
+        <!-- Form Title -->
+        <h2 class="form-title text-center mb-4">Add New Pet</h2>
+
+        <!-- Form -->
+        <form method="POST" action="{{ url_for('add_pet') }}" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-4">
+                    <!-- Add Photo Section -->
+                    <div class="file-upload-box" style="background-color: #d6b98c;">
+                        <div class="inner-box">
+                            <i class="bi bi-plus-lg" style="font-size: 48px; color: #fff;"></i>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="file" name="image" id="image" class="form-control-file" required>
+                        </div>
+                        <img id="photo-preview" src="{{ url_for('static', filename='images/default_pet.png') }}" alt="Preview"
+                             style="display:none; width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin-top: 10px;">
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <!-- Form Inputs -->
+                    <div class="form-group mb-3">
+                        <label for="name">Pet Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="breed">Breed:</label>
+                        <input type="text" class="form-control" id="breed" name="breed" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="age">Age:</label>
+                        <input type="number" class="form-control" id="age" name="age" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="weight">Weight:</label>
+                        <input type="text" class="form-control" id="weight" name="weight" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="sex">Sex:</label>
+                        <input type="text" class="form-control" id="sex" name="sex" required>
+                    </div>
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-custom">Add</button> 
+                        <a href="{{ url_for('customize_pets') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Preview the uploaded image
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var output = document.getElementById('photo-preview');
+            output.src = reader.result;
+            output.style.display = 'block';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+{% endblock %}

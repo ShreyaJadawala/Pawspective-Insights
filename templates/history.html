@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+History
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>History</h2>
+
+    {% if history_entries %}
+    <div class="list-group mt-4">
+        {% for entry in history_entries %}
+        <div class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <!-- Display the user's analyzed image -->
+                    <img src="{{ url_for('static', filename=entry.image) }}" alt="Analyzed Image" class="img-thumbnail me-3" width="50">
+                    {{ entry.result_text }}
+                </div>
+                <span class="badge bg-secondary">{{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No history found. Click the "+" button to analyze your pet's mood or breed.</p>
+    <a href="/mood_analyzer" class="btn btn-primary">Analyze Mood</a>
+    <a href="/breed_analyzer" class="btn btn-primary">Analyze Breed</a>
+    {% endif %}
+</div>
+{% endblock %}

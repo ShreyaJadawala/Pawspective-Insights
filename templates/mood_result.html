@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mood Result
+{% endblock %}
+
+{% block content %}
+<style>
+    .mood-container {
+        max-width: 450px;
+        margin: 30px auto;
+        background-color: #f5e6cc;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .mood-container h2 {
+        color: #4e4e4e;
+        font-weight: bold;
+    }
+
+    .file-upload-box img {
+        background-color: white;
+        width: 100%;
+        height: auto;
+        border: 4px solid #b59b72;
+        border-radius: 10px;
+        padding: 5px;
+    }
+
+    .btn-custom-submit {
+        background-color: #b59b72;
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        font-weight: bold;
+        font-size: 16px;
+        border-radius: 8px;
+    }
+
+    .btn-custom-submit:hover {
+        background-color: #a09470;
+    }
+
+    .btn-back {
+        background-color: #f5e6cc;
+        border: none;
+        color: #4e4e4e;
+        font-size: 24px;
+        padding: 5px 10px;
+        text-decoration: none;
+        margin-left: 20px;
+        border-radius: 8px;
+    }
+
+    .btn-back i {
+        font-size: 24px;
+    }
+
+    .btn-back:hover {
+        color: #a09470;
+    }
+
+    .mood-result {
+        font-size: 20px;
+        color: #4e4e4e;
+        margin-top: 20px;
+    }
+
+    .mood-confidence {
+        font-size: 18px;
+        color: #6a6a6a;
+    }
+</style>
+
+<!-- Flashed Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            <div>
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<!-- Back Button -->
+<div class="container mt-3">
+    <a href="/mood_analyzer" class="btn-back">
+        <i class="bi bi-arrow-left"></i> <!-- Bootstrap icon for arrow -->
+    </a>
+</div>
+
+<!-- Mood Result Content -->
+<div class="mood-container">
+    <h2>IDENTIFIED MOOD</h2>
+    <div class="file-upload-box">
+        <img src="{{ url_for('static', filename=filepath) }}" alt="Uploaded Image" class="img-fluid">
+    </div>
+
+    <!-- Displaying dynamic mood result and confidence -->
+    <div class="mood-result">
+        Mood Detected: <strong>{{ mood }}</strong>
+    </div>
+    <div class="mood-confidence">
+        Confidence: {{ confidence }}%
+    </div>
+
+    <!-- Option to analyze another image -->
+    <form action="/mood_analyzer" method="POST" enctype="multipart/form-data" class="text-center mt-3">
+        <div class="mb-3">
+            <input type="file" name="image" id="image" class="form-control-file">
+        </div>
+        <button type="submit" class="btn btn-custom-submit">Analyze Another Image</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+{% endblock %}

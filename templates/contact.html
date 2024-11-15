@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+Contact Information - PAWspective Insights
+{% endblock %}
+
+{% block content %}
+<div class="contact-info-container container mt-5">
+    <h2 class="text-center mb-4">Contact Info</h2>
+
+    <div class="row align-items-center">
+        <!-- Contact details on the left -->
+        <div class="col-md-6">
+            <div class="contact-details p-4 shadow-sm rounded">
+                <h3 class="text-center contact-title mb-4">Contact Info</h3>
+                <p><strong>Address :</strong> 135 Fennell Ave West,<br> Hamion, Ontario, L9C0E5.</p>
+                <p><strong>Email :</strong> Pawspective@gmail.com</p>
+                <p><strong>Contact Info :</strong> +1 (647) 906-8765</p>
+            </div>
+        </div>
+
+        <!-- Contact image on the right -->
+        <div class="col-md-6 text-center">
+            <img src="{{ url_for('static', filename='images/dog.png') }}" class="contact-image img-fluid rounded shadow-sm" alt="Dog Image">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .contact-info-container h2 {
+        color: #4e4e4e;
+        font-weight: bold;
+    }
+
+    .contact-details {
+        background-color: #f5e6cc;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .contact-title {
+        background-color: #b59b72;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .contact-details p {
+        color: #4e4e4e;
+        font-size: 18px;
+        line-height: 1.6;
+    }
+
+    .contact-details strong {
+        color: #333;
+        font-weight: bold;
+    }
+
+    .contact-image {
+        max-width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}

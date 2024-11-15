@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PAWspective Insights{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Flex container for full viewport height */
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Main container to take up remaining height */
+        .content-wrapper {
+            flex: 1;
+        }
+
+        /* Footer styling */
+        .footer {
+            background-color: #d9c4a3;
+            padding: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #c2b280;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/home">PAWspective Insights</a>
+                <div class="navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/my_pets">My Pets</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/history">History</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            {% if session['user'] is defined %}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ session['user']['name'] }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" href="/my_profile">My Profile</a></li>
+                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            </ul>
+                            {% else %}
+                            <a class="nav-link" href="/login">Login</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="content-wrapper container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-fluid p-3">
+            <div class="row">
+                <div class="col-md-4 d-flex justify-content-center align-items-center">
+                    <h2 class="footer-title">PAWspective <br> Insights</h2>
+                </div>
+                <div class="col-md-8">
+                    <div class="d-flex justify-content-center">
+                        <div class="footer-links-section">
+                            <h4 class="footer-links-title">Important links</h4>
+                            <div class="d-flex justify-content-center">
+                                <ul class="footer-links">
+                                    <li><a href="/home">Home</a></li>
+                                    <li><a href="/about">About us</a></li>
+                                </ul>
+                                <ul class="footer-links ms-4">
+                                    <li><a href="/services">Our Services</a></li>
+                                    <li><a href="/contact">Contact</a></li>
+                                    <li><a href="/submit_feedback">Feedback</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

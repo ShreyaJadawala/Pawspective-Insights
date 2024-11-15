@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+Delete Pet
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>Are you sure you want to delete {{ pet.name }}?</h2>
+    
+    <form method="POST" action="">
+        <button type="submit" name="action" value="confirm" class="btn btn-danger">DELETE</button>
+        <button type="submit" name="action" value="cancel" class="btn btn-secondary">CANCEL</button>
+    </form>
+</div>
+{% endblock %}

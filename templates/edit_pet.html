@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit My Pet
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <button class="btn back-btn" onclick="window.history.back();">Back</button>
+
+    <div class="card p-4" style="background-color: #f5e6cc;">
+        <h2 class="form-title text-center mb-4">Edit My Pet</h2>
+
+        <div class="row">
+            <div class="col-md-4">
+                <img id="photo-preview" src="{{ url_for('static', filename='uploads/' + pet.image) }}" alt="Pet Photo" class="img-fluid rounded-circle">
+                
+            </div>
+
+            <form action="/edit_pet/{{ pet.id }}" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Pet Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ pet.name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="breed" class="form-label">Breed:</label>
+                    <input type="text" class="form-control" id="breed" name="breed" value="{{ pet.breed }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label">Age:</label>
+                    <input type="number" class="form-control" id="age" name="age" value="{{ pet.age }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="weight" class="form-label">Weight:</label>
+                    <input type="text" class="form-control" id="weight" name="weight" value="{{ pet.weight }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="sex" class="form-label">Sex:</label>
+                    <input type="text" class="form-control" id="sex" name="sex" value="{{ pet.sex }}" required>
+                </div>
+                
+                <!-- Image Upload (optional) -->
+                <div class="mb-3">
+                    <label for="image" class="form-label">Edit Profile Photo:</label>
+                    <input type="file" id="image" name="image" class="form-control-file">
+                </div>
+            
+                <button type="submit" class="btn btn-custom">Save Changes</button>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var output = document.getElementById('photo-preview');
+            output.src = reader.result;
+            output.style.display = 'block';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+{% endblock %}

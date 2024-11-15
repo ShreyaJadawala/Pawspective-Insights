@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mood Analyzer
+{% endblock %}
+
+{% block content %}
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    .mood-container {
+        max-width: 350px;
+        margin: 30px auto;
+        background-color: #f5e6cc;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .mood-container h2 {
+        color: #4e4e4e;
+        font-weight: bold;
+    }
+
+    .file-upload-box {
+        background-color: #b59b72;
+        height: 200px;
+        width: 200px;
+        margin: 0 auto 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        border-radius: 12px;
+    }
+
+    .file-upload-box .inner-box {
+        background-color: white;
+        width: 70%;
+        height: 70%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 3px solid #b59b72;
+        border-radius: 10px;
+    }
+
+    .file-upload-box i {
+        font-size: 48px;
+        color: #4e4e4e;
+    }
+
+    .form-control-file {
+        border: 2px solid #4e4e4e;
+        background-color: white;
+        color: #4e4e4e;
+        padding: 8px;
+        margin-top: 10px;
+        width: 90%;
+        display: inline-block;
+        border-radius: 8px;
+    }
+
+    .btn-custom-submit {
+        background-color: #b59b72;
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        font-weight: bold;
+        font-size: 16px;
+        border-radius: 8px;
+    }
+
+    .btn-custom-submit:hover {
+        background-color: #a09470;
+        color: white;
+    }
+
+    .btn-back {
+        background-color: #f5e6cc;
+        border: none;
+        color: #4e4e4e;
+        font-size: 24px;
+        padding: 5px 10px;
+        text-decoration: none;
+        margin-left: 20px;
+        border-radius: 8px;
+    }
+
+    .btn-back i {
+        font-size: 24px;
+    }
+
+    .btn-back:hover {
+        color: #a09470;
+    }
+</style>
+
+<!-- Back Button -->
+<div class="container mt-3">
+    <a href="/home" class="btn-back">
+        <i class="bi bi-arrow-left"></i> <!-- Bootstrap icon for arrow -->
+    </a>
+</div>
+
+<!-- Mood Analyzer Form -->
+<div class="mood-container">
+    <h2>IDENTIFY MOOD</h2>
+    <div class="file-upload-box">
+        <div class="inner-box">
+            <i class="bi bi-plus-lg"></i> <!-- Bootstrap icon for plus -->
+        </div>
+    </div>
+
+    <form action="/mood_analyzer" method="POST" enctype="multipart/form-data" class="text-center mt-3">
+        <div class="mb-3">
+            <input type="file" name="image" id="image" class="form-control-file">
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="container mt-3">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <button type="submit" class="btn btn-custom-submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+<script>
+    document.querySelector("form").addEventListener("submit", function () {
+        this.querySelector("button[type='submit']").disabled = true;
+    });
+</script>
+{% endblock %}

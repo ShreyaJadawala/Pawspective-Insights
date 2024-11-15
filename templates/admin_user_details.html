@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #c2b280;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">PAWspective Insights</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h2 class="text-center">{{ user.name }}'s Details</h2>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+
+        <h3>Prediction History</h3>
+        <ul class="list-group">
+            {% for entry in history_entries %}
+            <li class="list-group-item d-flex align-items-center">
+                {% if entry.image %}
+                <img src="{{ url_for('static', filename=entry.image) }}" alt="Prediction Image" class="img-thumbnail me-3" style="width: 100px; height: auto;">
+                {% endif %}
+                <div>
+                    <strong>{{ entry.result_type }}</strong> - {{ entry.result_text }}<br>
+                    <small class="text-muted">{{ entry.timestamp }}</small>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        
+        
+
+        <h3 class="mt-4">Pets</h3>
+        {% for pet in pets %}
+        <div class="card mb-3 p-3 shadow-sm">
+            <h4>{{ pet.name }} - {{ pet.breed }}</h4>
+            <p>Age: {{ pet.age }}, Weight: {{ pet.weight }}, Sex: {{ pet.sex }}</p>
+            {% if pet.image %}
+            <img src="{{ url_for('static', filename='uploads/' + pet.image) }}" class="card-img-top pet-image" alt="{{ pet.name }}" class="img-fluid rounded shadow" style="height: 20%;width: 20%;">
+            {% endif %}
+
+            <h5 class="mt-3">Appointments</h5>
+            <ul class="list-group">
+                {% for appointment in pet_appointments[pet.id] %}
+                <li>{{ appointment.date }} at {{ appointment.time }} - {{ appointment.clinic }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+
+        <a href="{{ url_for('admin_view_users') }}" class="btn btn-custom mt-3">Back to Users</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+
+

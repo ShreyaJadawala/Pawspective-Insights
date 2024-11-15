@@ -8,10 +8,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+  
+
     <header class="header">
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #c2b280;">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">PAWspective Insights</a>
+                <a class="navbar-brand" href="/">PAWspective Insights</a>
             </div>
         </nav>
     </header>
@@ -28,6 +30,25 @@
             <p style="font-family: 'Times New Roman', Times, serif; color: #4e4e4e; font-size: 18px;">Verify Code</p>
             <p style="font-family: 'Times New Roman', Times, serif; color: #4e4e4e; font-weight: normal;">An authentication code has been sent to your email.</p>
             
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="container mt-3">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <script>
+                document.querySelector("form").addEventListener("submit", function () {
+                    this.querySelector("button[type='submit']").disabled = true;
+                });
+            </script>
+
             <form action="/verify_code" method="post">
                 <input type="hidden" name="email" value="{{ email }}">
                 <div class="mb-3 text-center">

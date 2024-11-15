@@ -1,0 +1,1044 @@
+{
+	"info": {
+		"_postman_id": "492c7e20-89c8-4809-a166-3507dbc66465",
+		"name": "Milestone 2 Flask App Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38655950"
+	},
+	"item": [
+		{
+			"name": "Pass",
+			"item": [
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains flash message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Registration successful');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Sarthak Kapaliya",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "55 fennell",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Hamilton",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "Ontario",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Canada",
+									"type": "text"
+								},
+								{
+									"key": "postal_code",
+									"value": "L9C 1E6",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "secretsociety12@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "01/01/1990",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User session is set\", function () {\r",
+									"    pm.expect(pm.cookies.has('session')).to.be.true;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "secretsociety12@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mood Analyzer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mood and confidence in response\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"mood\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"confidence\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Confidence is above 50%\", function () {\r",
+									"    var confidenceValue = parseFloat(pm.response.text().match(/Confidence: (\\d+\\.\\d+%)/)[1].replace('%',''));\r",
+									"    pm.expect(confidenceValue).to.be.above(50);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "Draft1/static/images/husky.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/mood_analyzer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mood_analyzer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Breed Analyzer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Breed and confidence in response\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"breed\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"confidence\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Confidence is above 50%\", function () {\r",
+									"    var confidenceValue = parseFloat(pm.response.text().match(/Confidence: (\\d+\\.\\d+%)/)[1].replace('%',''));\r",
+									"    pm.expect(confidenceValue).to.be.above(50);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1ef7d409-bdeb-4ee0-b07d-20f70ee02933"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/breed_analyzer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"breed_analyzer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains success message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Profile updated successfully');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Sarthak Kapaliya",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "132 Main Stss",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "secretsociety12@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "New City",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "New Province",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "New Country",
+									"type": "text"
+								},
+								{
+									"key": "postal_code",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/edit_profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"edit_profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Pet added message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"New pet added successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Luna",
+									"type": "text"
+								},
+								{
+									"key": "breed",
+									"value": "Husky",
+									"type": "text"
+								},
+								{
+									"key": "age",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "20 lbs",
+									"type": "text"
+								},
+								{
+									"key": "sex",
+									"value": "Female",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1ef7d409-bdeb-4ee0-b07d-20f70ee02933"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/add_pet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"add_pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Book Appointment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Appointment booked message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Appointment added and email sent\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "date",
+									"value": "2023-12-15",
+									"type": "text"
+								},
+								{
+									"key": "time",
+									"value": "15:00",
+									"type": "text"
+								},
+								{
+									"key": "clinic",
+									"value": "Vet Clinic",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/add_appointment/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"add_appointment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Password Recovery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Recovery code message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"A recovery code has been sent to your email\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "secretsociety12@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/recover_password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"recover_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Pet Information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Pet updated message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Pet details updated successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Buddy",
+									"type": "text"
+								},
+								{
+									"key": "age",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "15 lbs",
+									"type": "text"
+								},
+								{
+									"key": "sex",
+									"value": "Male",
+									"type": "text"
+								},
+								{
+									"key": "breed",
+									"value": "Poodle",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/edit_pet/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"edit_pet",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(History) Past Uploads",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Fixed Content-Type to application/json\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Prediction history exists\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Siberian_husky');\r",
+									"    pm.expect(pm.response.text()).to.include('Relaxed');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/history",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Appointment Cancellation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Cancellation email sent\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Appointment canceled and email sent\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:5000/remove_appointment/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"remove_appointment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fail",
+			"item": [
+				{
+					"name": "Mood",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message for invalid image file\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Please upload a valid image file');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Shreya/Downloads/Milesttone1_Project/requirements copy.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/mood_analyzer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mood_analyzer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Breed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message for invalid image file\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Please upload a valid image file');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is within acceptable range\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Shreya/Downloads/Milesttone1_Project/requirements.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/breed_analyzer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"breed_analyzer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains flash message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Please try a different one.');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "John Doe",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "123 Main St",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Hamilton",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "Ontario",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Canada",
+									"type": "text"
+								},
+								{
+									"key": "postal_code",
+									"value": "L8S4L8",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "john.doe20@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "01/01/1990",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response contains flash message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Invalid credentials');\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "john.doe20@example.comd",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Appointment Time",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Invalid time format message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Invalid date or time format\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "date",
+									"value": "2024-11-01",
+									"type": "text"
+								},
+								{
+									"key": "time",
+									"value": "invalid-time",
+									"type": "text"
+								},
+								{
+									"key": "clinic",
+									"value": "Vet Clinic",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/add_appointment/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"add_appointment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Email - Password Recovery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Email not found message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Email not found. Please try again.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "invalid@example.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/recover_password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"recover_password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

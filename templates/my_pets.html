@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Pets
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>My Pets</h2>
+
+    
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <script>
+        document.querySelector("form").addEventListener("submit", function () {
+            this.querySelector("button[type='submit']").disabled = true;
+        });
+    </script>
+
+    {% if pets %}
+    <div class="d-flex justify-content-center">
+        <div class="row justify-content-center">
+            {% for pet in pets %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center mb-4">
+                <div class="card w-100">
+                    <a href="{{ url_for('pet_details', pet_id=pet.id) }}">
+                        <img src="{{ url_for('static', filename='uploads/' + pet.image) }}" class="card-img-top pet-image" alt="{{ pet.name }}">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pet.name }}</h5>
+                        <h5 class="card-title">Age: {{ pet.age }} years</h5>
+                        <h5 class="card-title">Sex: {{ pet.sex }}</h5>
+                        <h5 class="card-title">Weight: {{ pet.weight }} lb</h5>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <a href="/customize_pets" class="btn btn-primary mt-4">Customize and Manage My Pets</a>
+    {% else %}
+    <p>You don't have any pets yet.</p>
+    <a href="/add_pet" class="btn btn-primary mt-4">Add a New Pet</a>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{% block styles %}
+<style>
+    .pet-image {
+        object-fit: cover; /* Ensures the image fills the container while preserving aspect ratio */
+        width: 90%;
+        height: 20%; /* Set a consistent height for all images */
+        border-radius: 8px;
+    }
+
+    /* Adjust image size slightly for smaller screens */
+    @media (max-width: 576px) {
+        .pet-image {
+            height: 250px; /* Adjust for small screens */
+        }
+    }
+
+    /* Ensure the card body also stays uniform */
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+</style>
+{% endblock %}
+

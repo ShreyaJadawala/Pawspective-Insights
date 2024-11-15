@@ -1,0 +1,100 @@
+name:JohnDoe
+address:123MainSt
+city:Hamilton
+province:Ontario
+country:Canada,
+postal_code:L8S4L8,
+email:john.doe@example.com,
+password:password123,
+dob:01/01/1990
+
+
+email:john.doe@example.com
+password:password123
+
+
+
+<style>
+        /* Flash message styles */
+        .flash-message {
+            padding: 10px 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            position: relative;
+            transition: opacity 0.5s ease-out;
+            visibility: visible;
+        }
+
+        .flash-success {
+            background-color: #28a745; /* Green */
+        }
+
+        .flash-error {
+            background-color: #dc3545; /* Red */
+        }
+
+        .flash-warning {
+            background-color: #ffc107; /* Yellow */
+            color: #212529;
+        }
+
+        .flash-message.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Basic styling for form */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+
+<script>
+        // JavaScript to fade out flash messages after 3 seconds
+        setTimeout(() => {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(message => {
+                message.classList.add('hide');
+            });
+        }, 3000);
+    </script>
