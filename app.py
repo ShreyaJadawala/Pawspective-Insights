@@ -624,7 +624,7 @@ def signup():
 def send_recovery_code(to_email, recovery_code):
     client = EmailClient.from_connection_string(app.config['AZURE_CONNECTION_STRING'])
     message = {
-        "senderAddress": "DoNotReply@d7fc5de3-ac43-41f7-933a-814f685f6aae.azurecomm.net",  # Replace <from_domain> with your verified domain
+        "senderAddress": "DoNotReply@a89d27b1-a2c4-42e1-922a-2d0accd7e43b.azurecomm.net",  # Replace <from_domain> with your verified domain
         "recipients": {
             "to": [{"address": to_email}]
         },
@@ -861,7 +861,7 @@ def pet_details(pet_id):
 def send_appointment_email(to_email, pet_name, date, time, clinic):
     client = EmailClient.from_connection_string(app.config['AZURE_CONNECTION_STRING'])
     message = {
-        "senderAddress": "DoNotReply@d7fc5de3-ac43-41f7-933a-814f685f6aae.azurecomm.net",  # Replace <from_domain> with your verified domain
+        "senderAddress": "DoNotReply@a89d27b1-a2c4-42e1-922a-2d0accd7e43b.azurecomm.net",  # Replace <from_domain> with your verified domain
         "recipients": {
             "to": [{"address": to_email}]
         },
@@ -889,7 +889,7 @@ def send_appointment_email(to_email, pet_name, date, time, clinic):
 def send_cancellation_email(to_email, pet_name, date, time, clinic):
     client = EmailClient.from_connection_string(app.config['AZURE_CONNECTION_STRING'])
     message = {
-        "senderAddress": "DoNotReply@d7fc5de3-ac43-41f7-933a-814f685f6aae.azurecomm.net",  # Replace <from_domain> with your verified domain
+        "senderAddress": "DoNotReply@a89d27b1-a2c4-42e1-922a-2d0accd7e43b.azurecomm.net",  # Replace <from_domain> with your verified domain
         "recipients": {
             "to": [{"address": to_email}]
         },
@@ -944,8 +944,8 @@ def add_appointment(pet_id):
         db.session.commit()
 
         user = User.query.get(pet.user_id)
-        # send_appointment_email(user.email, pet.name, appointment_date, appointment_time, clinic)
-        # flash('Appointment added and email sent!', 'success')
+        send_appointment_email(user.email, pet.name, appointment_date, appointment_time, clinic)
+        flash('Appointment added and email sent!', 'success')
         return redirect(url_for('pet_details', pet_id=pet.id))
 
     return render_template('add_appointment.html', pet=pet)
@@ -963,8 +963,8 @@ def remove_appointment(appointment_id):
     db.session.delete(appointment)
     db.session.commit()
 
-    # send_cancellation_email(user.email, pet.name, appointment.date, appointment.time, appointment.clinic)
-    # flash('Appointment canceled and email sent!', 'success')
+    send_cancellation_email(user.email, pet.name, appointment.date, appointment.time, appointment.clinic)
+    flash('Appointment canceled and email sent!', 'success')
     return redirect(url_for('pet_details', pet_id=pet.id))
 
 
