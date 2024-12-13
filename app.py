@@ -14,12 +14,26 @@ from flask_cors import CORS
 from flask_mail import Mail, Message
 from azure.communication.email import EmailClient
 from dotenv import load_dotenv
+from datetime import timedelta
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from markupsafe import escape
+from datetime import datetime
+import pytz
+
 load_dotenv()  # Load environment variables from .env file
 
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+
+# Add Flask-Limiter to the app
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["10 per minute"]  # Set a global rate limit
+)
 
 # Fetch secret key and Azure connection string from environment variables
 app.secret_key = os.getenv('SECRET_KEY')
@@ -70,16 +84,15 @@ class User(db.Model):
     dob = db.Column(db.String(20), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)  # New field for admin role
     date_created = db.Column(db.DateTime, default=datetime.now())
-
-# Initialize admin if none exists
+    
 def initialize_admin():
-    admin_email = "admin@example.com"
-    admin_password = "admin_password"
+    admin_email = os.getenv("ADMIN_EMAIL", "admin@example.com")
+    admin_password = os.getenv("ADMIN_PASSWORD", "admin_password")
 
     # Check if an admin user already exists
     if not User.query.filter_by(is_admin=True).first():
         hashed_password = bcrypt.hashpw(admin_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-        
+
         # Create the admin user
         admin_user = User(
             name="Admin User",
@@ -115,17 +128,20 @@ class Pet(db.Model):
     name = db.Column(db.String(100), nullable=False)
     breed = db.Column(db.String(100))
     age = db.Column(db.Integer)
-    weight = db.Column(db.String(20))  
+    weight = db.Column(db.Float(20))  
     sex = db.Column(db.String(10))  
     image = db.Column(db.String(100))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
 class History(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     result_type = db.Column(db.String(50))  
     result_text = db.Column(db.String(200))  # Analysis result
     image = db.Column(db.String(200))  # Path to the analyzed image
-    timestamp = db.Column(db.DateTime, default=datetime.now)  # Changed to datetime.now
+    # Default timestamp in UTC
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now().replace(tzinfo=pytz.utc))  
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
 
 
 class Feedback(db.Model):
@@ -133,7 +149,7 @@ class Feedback(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     feedback_text = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now().replace(tzinfo=pytz.utc))  
 
     user = db.relationship('User', backref=db.backref('feedbacks', lazy=True, cascade="all, delete"))
 
@@ -147,16 +163,29 @@ with app.app_context():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Helper function to predict mood
+# # Helper function to predict mood
+# def predict_mood(image_path):
+#     img = load_img(image_path, target_size=(224, 224))
+#     img_array = img_to_array(img)
+#     img_array = tf.expand_dims(img_array, 0)  # Create a batch for the model
+
+#     predictions = mood_model.predict(img_array)
+#     score = tf.nn.softmax(predictions[0])
+#     mood = mood_class_names[np.argmax(score)]
+#     confidence = 100 * np.max(score)
+
+#     return mood, confidence
+
+# Update the predict_mood function to handle low confidence
 def predict_mood(image_path):
     img = load_img(image_path, target_size=(224, 224))
     img_array = img_to_array(img)
-    img_array = tf.expand_dims(img_array, 0)  # Create a batch for the model
+    img_array = tf.expand_dims(img_array, 0)
 
     predictions = mood_model.predict(img_array)
     score = tf.nn.softmax(predictions[0])
-    mood = mood_class_names[np.argmax(score)]
     confidence = 100 * np.max(score)
+    mood = mood_class_names[np.argmax(score)] if confidence > 50 else "Unclear"
 
     return mood, confidence
 
@@ -202,30 +231,77 @@ def admin_view_users():
     users = User.query.filter_by(is_admin=False).all()  # Display only non-admin users
     return render_template('admin_users.html', users=users)
 
+import re
 
-# Route to edit a specific user
+
+# Helper functions for validation
+def is_valid_email(email):
+    """Validate email format."""
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return re.match(email_regex, email) is not None
+
+def is_valid_postal_code(postal_code):
+    """Validate postal code format (example for Canadian postal code)."""
+    postal_code_regex = r'^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$'
+    return re.match(postal_code_regex, postal_code) is not None
+
 @app.route('/admin/users/edit/<int:user_id>', methods=['GET', 'POST'])
 def admin_edit_user(user_id):
-    user = User.query.get_or_404(user_id)
-    
-    if request.method == 'POST':
-        # Update user details from form inputs
-        user.name = request.form['name']
-        user.address = request.form['address']
-        user.city = request.form['city']
-        user.province = request.form['province']
-        user.country = request.form['country']
-        user.postal_code = request.form['postal_code']
-        user.email = request.form['email']
-        user.dob = request.form['dob']
-        user.is_admin = 'is_admin' in request.form  # Checkbox for admin role
+    # Check if the user is an admin
+    if 'user' not in session or not session['user'].get('is_admin'):
+        flash("Admin access required.", "danger")
+        return redirect(url_for('login'))
 
-        db.session.commit()
-        flash('User details updated successfully.', 'success')
-        return redirect(url_for('admin_view_users'))
+    user = User.query.get_or_404(user_id)
+
+    if request.method == 'POST':
+        # Retrieve form data
+        name = request.form.get('name')
+        address = request.form.get('address')
+        city = request.form.get('city')
+        province = request.form.get('province')
+        country = request.form.get('country')
+        postal_code = request.form.get('postal_code')
+        email = request.form.get('email')
+        dob = request.form.get('dob')
+        is_admin = 'is_admin' in request.form  # Checkbox for admin role
+        
+        # Validate required fields
+        if not name or not email:
+            flash("Name and email are required.", "danger")
+            return render_template('admin_edit_user.html', user=user)
+
+        # Validate email format
+        if not is_valid_email(email):
+            flash("Invalid email format.", "danger")
+            return render_template('admin_edit_user.html', user=user)
+        
+        # Validate postal code format if provided
+        if postal_code and not is_valid_postal_code(postal_code):
+            flash("Invalid postal code format. Use format like A1A 1A1.", "danger")
+            return render_template('admin_edit_user.html', user=user)
+
+        # Update user details
+        user.name = name
+        user.address = address
+        user.city = city
+        user.province = province
+        user.country = country
+        user.postal_code = postal_code
+        user.email = email
+        user.dob = dob
+        user.is_admin = is_admin  # Set is_admin based on the checkbox
+
+        try:
+            db.session.commit()
+            flash('User details updated successfully.', 'success')
+            return redirect(url_for('admin_view_users'))
+        except:
+            db.session.rollback()  # Roll back the transaction in case of error
+            flash("Email already exists. Please try a different one.", "danger")
+            return render_template('admin_edit_user.html', user=user)
 
     return render_template('admin_edit_user.html', user=user)
-
 
 @app.route('/admin/users/delete/<int:user_id>', methods=['POST'])
 def admin_delete_user(user_id):
@@ -283,25 +359,51 @@ def admin_view_user_details(user_id):
     pet_appointments = {pet.id: Appointment.query.filter_by(pet_id=pet.id).all() for pet in pets}
 
     return render_template('admin_user_details.html', user=user, history_entries=history_entries, pets=pets, pet_appointments=pet_appointments)
-
+    
 @app.route('/submit_feedback', methods=['GET', 'POST'])
 def submit_feedback():
     if 'user' not in session:
         return redirect(url_for('login'))
     
     if request.method == 'POST':
-        feedback_text = request.form['feedback_text']
-        rating = int(request.form['rating'])  # Assuming rating is from a select dropdown
+        # Retrieve form data
+        feedback_text = request.form.get('feedback_text', '').strip()
+        sanitized_feedback = escape(feedback_text)  # Sanitize input to prevent XSS
+
+        rating = request.form.get('rating')
+
+        # Validation: Check if feedback text is empty
+        if not feedback_text:
+            flash('Feedback text is required.', 'danger')
+            return render_template('submit_feedback.html', feedback_text=feedback_text, rating=rating)
         
+        # Validation: Check if rating is provided
+        if not rating:
+            flash('Rating is required.', 'danger')
+            return render_template('submit_feedback.html', feedback_text=feedback_text, rating=rating)
+        
+        # Validation: Check if rating is an integer and within the acceptable range (e.g., 1-5)
+        try:
+            rating = int(rating)
+            if rating < 1 or rating > 5:
+                flash('Invalid rating value. Please select a value between 1 and 5.', 'danger')
+                return render_template('submit_feedback.html', feedback_text=feedback_text, rating=rating)
+        except ValueError:
+            flash('Invalid rating value. Please select a valid integer rating.', 'danger')
+            return render_template('submit_feedback.html', feedback_text=feedback_text, rating=rating)
+
+        # Save feedback to the database
         user_id = session['user']['id']
         new_feedback = Feedback(user_id=user_id, feedback_text=feedback_text, rating=rating)
         db.session.add(new_feedback)
         db.session.commit()
-        
+
+        # Success message
         flash('Thank you for your feedback!', 'success')
         return redirect(url_for('home'))
-    
+
     return render_template('submit_feedback.html')
+
 
 @app.route('/admin/add_user', methods=['GET', 'POST'])
 def admin_add_user():
@@ -351,27 +453,36 @@ def admin_add_user():
 
     return render_template('admin_add_user.html')
 
+
+
 @app.route('/admin/feedback')
 def admin_feedback():
     if 'user' not in session or not session['user']['is_admin']:
         flash("Admin access required.", "danger")
         return redirect(url_for('login'))
     
-    # Fetch all feedback entries excluding those from admin users
+    # Fetch feedback entries and adjust timestamps
     feedbacks = (db.session.query(Feedback)
                  .join(User)
                  .filter(User.is_admin == False)
                  .order_by(Feedback.timestamp.desc())
                  .all())
 
+    # # Set your offset (e.g., for Eastern Time use -5 hours)
+    # offset = timedelta(hours=-5)  # Adjust this based on your local timezone
+
+    # # Manually adjust each feedback timestamp
+    # for feedback in feedbacks:
+    #     feedback.timestamp = feedback.timestamp + offset
+
     # Calculate average rating, excluding admin feedback
     avg_rating = (db.session.query(db.func.avg(Feedback.rating))
                   .join(User)
                   .filter(User.is_admin == False)
                   .scalar())
-    
 
     return render_template('admin_feedback.html', feedbacks=feedbacks, avg_rating=avg_rating)
+
 
 
 @app.route('/about')
@@ -401,12 +512,27 @@ def edit_profile():
     user = User.query.get(session['user']['id'])
 
     if request.method == 'POST':
-        user.name = request.form['name']
-        user.address = request.form['address']
-        user.city = request.form['city']
-        user.province = request.form['province']
-        user.country = request.form['country']
-        user.postal_code = request.form['postal_code']
+        # Retrieve form data
+        name = request.form.get('name')
+        email = request.form.get('email')
+        address = request.form.get('address')
+        city = request.form.get('city')
+        province = request.form.get('province')
+        country = request.form.get('country')
+        postal_code = request.form.get('postal_code')
+
+        # Validate data (check for corruption or missing fields)
+        if not name :
+            flash("Invalid data format. Please check your input.", "danger")
+            return render_template('edit_profile.html', user=user)
+
+        # Validation passed: update the user object
+        user.name = name
+        user.address = address
+        user.city = city
+        user.province = province
+        user.country = country
+        user.postal_code = postal_code
 
         db.session.commit()
         session['user'] = {'name': user.name, 'email': user.email, 'id': user.id}
@@ -414,6 +540,7 @@ def edit_profile():
         return redirect(url_for('my_profile'))
 
     return render_template('edit_profile.html', user=user)
+
 
 @app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
@@ -481,12 +608,31 @@ def add_pet():
         return redirect(url_for('login'))
     
     if request.method == 'POST':
-        name = request.form['name']
-        breed = request.form['breed']
-        age = request.form['age']
-        weight = request.form['weight']
-        sex = request.form['sex']
+        name = request.form.get('name')
+        breed = request.form.get('breed')
+        age = request.form.get('age')  # Retrieve as string for validation
+        weight = request.form.get('weight')  # Retrieve as string for validation
+        sex = request.form.get('sex')
         image = request.files.get('image')  # Get the uploaded file
+
+        # Validate age is an integer
+        try:
+            age = int(age)  # Attempt to convert age to an integer
+        except ValueError:
+            flash("Invalid input type for age. Expected an integer.", "danger")
+            return render_template('add_pet.html', name=name, breed=breed, weight=weight, sex=sex)
+
+        # Validate weight is a float
+        try:
+            weight = float(weight)  # Attempt to convert weight to a float
+        except ValueError:
+            flash("Invalid input type for weight. Expected a float.", "danger")
+            return render_template('add_pet.html', name=name, breed=breed, age=age, sex=sex)
+
+        # Validate other fields (example: name and sex should not be empty)
+        if not name or not sex:
+            flash("Missing required fields: name and/or sex.", "danger")
+            return render_template('add_pet.html', breed=breed, age=age, weight=weight)
 
         if image and allowed_file(image.filename):
             # Define the upload folder based on user and pet name
@@ -500,18 +646,21 @@ def add_pet():
             image.save(filepath)
             
             # Store the relative path from the 'static' folder in the database
-            relative_image_path = user_folder +'/'+ image_filename
+            relative_image_path = user_folder + '/' + image_filename
             
             user_id = session['user']['id']
-            new_pet = Pet(name=name, breed=breed, age=age, weight=weight, sex=sex, image=relative_image_path, user_id=user_id)
+            new_pet = Pet(name=name, breed=breed, age=age, weight=str(weight), sex=sex, image=relative_image_path, user_id=user_id)
             db.session.add(new_pet)
             db.session.commit()
             flash('New pet added successfully', 'success')
 
             return redirect(url_for('my_pets'))
         else:
-            flash('Please upload a valid image file (png, jpg, jpeg).', 'danger')
+            flash("Please upload a valid image file (png, jpg, jpeg).", "danger")
+            return render_template('add_pet.html', name=name, breed=breed, age=age, weight=weight, sex=sex)
+
     return render_template('add_pet.html')
+
 
 @app.route('/edit_pet/<int:pet_id>', methods=['GET', 'POST'])
 def edit_pet(pet_id):
@@ -521,8 +670,15 @@ def edit_pet(pet_id):
         pet.name = request.form['name']
         pet.breed = request.form['breed']
         pet.age = request.form['age']
-        pet.weight = request.form['weight']
+        #pet.weight = request.form['weight']
         pet.sex = request.form['sex']
+        # Validate weight
+        weight_input = request.form['weight']
+        try:
+            pet.weight = float(weight_input)
+        except ValueError:
+            flash("Weight must be a valid number.", "danger")
+            return render_template('edit_pet.html', pet=pet)
 
         # Handle image file
         image = request.files.get('image')  # Use .get to avoid KeyError
@@ -548,6 +704,7 @@ def remove_pet(pet_id):
     if request.method == 'POST':
         # If the user confirms deletion
         if request.form.get('action') == 'confirm':
+            Appointment.query.filter_by(pet_id=pet_id).delete()
             db.session.delete(pet)
             db.session.commit()
             flash(f'{pet.name} has been removed.', 'success')
@@ -722,6 +879,7 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/mood_analyzer', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")  # Allow 5 requests per minute for this endpoint
 def mood_analyzer():
     if 'user' not in session:
         return redirect(url_for('login'))
@@ -740,6 +898,8 @@ def mood_analyzer():
 
             # Run prediction
             mood, confidence = predict_mood(filepath)
+            if mood == "Unclear":
+                flash("The uploaded image was unclear. Please try again.", "warning")
 
             # Save result to history with user ID and path relative to static folder
             user_id = session['user']['id']
@@ -765,6 +925,7 @@ def mood_result():
     filepath = request.args.get('filepath')  # Get the full relative path to the image
     
     return render_template('mood_result.html', filepath=filepath, mood=mood, confidence=confidence)
+
 @app.route('/breed_analyzer', methods=['GET', 'POST'])
 def breed_analyzer():
     if 'user' not in session:
@@ -970,7 +1131,9 @@ def remove_appointment(appointment_id):
     flash('Appointment canceled and email sent!', 'success')
     return redirect(url_for('pet_details', pet_id=pet.id))
 
-
+@app.errorhandler(404)
+def page_not_found(e):
+    return {"error": "Not Found"}, 404
 
 if __name__ == '__main__':
     app.run(debug=True,host="0.0.0.0",port=8000)
