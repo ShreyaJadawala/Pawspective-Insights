@@ -1,0 +1,515 @@
+{
+	"info": {
+		"_postman_id": "df2f1402-fa3a-4275-95f9-c8b9f3a16988",
+		"name": "Flask App Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38655950"
+	},
+	"item": [
+		{
+			"name": "Pass",
+			"item": [
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains flash message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Registration successful');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "John Doe",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "123 Main St",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Hamilton",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "Ontario",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Canada",
+									"type": "text"
+								},
+								{
+									"key": "postal_code",
+									"value": "L8S4L8",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "john.does21@exams.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "01/01/1990",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User session is set\", function () {\r",
+									"    pm.expect(pm.cookies.has('session')).to.be.true;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "john.doe@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mood Analyzer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mood and confidence in response\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"mood\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"confidence\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Confidence is above 50%\", function () {\r",
+									"    var confidenceValue = parseFloat(pm.response.text().match(/Confidence: (\\d+\\.\\d+%)/)[1].replace('%',''));\r",
+									"    pm.expect(confidenceValue).to.be.above(50);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "static/uploads/Golden-Retriever-Puppies.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/mood_analyzer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mood_analyzer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Breed Analyzer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Breed and confidence in response\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"breed\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"confidence\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Confidence is above 50%\", function () {\r",
+									"    var confidenceValue = parseFloat(pm.response.text().match(/Confidence: (\\d+\\.\\d+%)/)[1].replace('%',''));\r",
+									"    pm.expect(confidenceValue).to.be.above(50);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1ef7d409-bdeb-4ee0-b07d-20f70ee02933"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/breed_analyzer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"breed_analyzer"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fail",
+			"item": [
+				{
+					"name": "Mood",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message for invalid image file\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Please upload a valid image file');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "static/uploads/Project.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/mood_analyzer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mood_analyzer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Breed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message for invalid image file\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Please upload a valid image file');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is within acceptable range\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "static/uploads/Project.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/breed_analyzer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"breed_analyzer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains flash message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Please try a different one.');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "John Doe",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "123 Main St",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Hamilton",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "Ontario",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Canada",
+									"type": "text"
+								},
+								{
+									"key": "postal_code",
+									"value": "L8S4L8",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "john.doe21@exam.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "01/01/1990",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response contains flash message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('Invalid credentials');\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "john.doe@example.comdd",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
